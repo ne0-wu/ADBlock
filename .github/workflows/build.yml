@@ -10,19 +10,19 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      UPSTREAM_RELEASE_TAG: v0.6.24
+      UPSTREAM_RESPONSE_SHA256: f805f7dd5dad9f43ac67ce47b9d3ac294b5848a59b1d0ea9d504707fe406f4a1
     steps:
       - name: Checkout
         uses: actions/checkout@main
-        with:
-          submodules: recursive
-          token: ${{ secrets.SUBMODULE_TOKEN || github.token }}
       - name: Set up Node.js
         uses: actions/setup-node@main
         with:
           node-version: 'latest'
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       - name: Update local package.json version from release tag
@@ -32,8 +32,14 @@ jobs:
           version: ${{ github.ref_name }}
           keep-v: "false" # If set to "true", will not remove any 'v' prefix from the version number.
           ignore-semver-check: "false" # If set to "true", will not check if the version number is a valid semver version.
-      - name: Build scripts
-        run: npm run build
+      - name: Build scripts available to forks
+        run: npm run build:release
+      - name: Download verified upstream response bundle
+        run: |
+          curl --fail-with-body --location --retry 3 \
+            --output dist/response.bundle.js \
+            "https://github.com/BiliUniverse/ADBlock/releases/download/${UPSTREAM_RELEASE_TAG}/response.bundle.js"
+          echo "${UPSTREAM_RESPONSE_SHA256}  dist/response.bundle.js" | sha256sum --check --strict
       - name: Generate modules
         run: npm run build:args
       - name: Point generated assets at the current repository

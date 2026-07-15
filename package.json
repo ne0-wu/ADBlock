@@ -36,6 +36,7 @@
 		"wrangler:deploy": "bunx wrangler deploy --minify",
 		"serve": "webpack serve",
 		"build": "rspack build",
+		"build:release": "rspack build -c rspack.release.config.js",
 		"build:dev": "rspack build -c rspack.dev.config.js --mode=development",
 		"build:args": "arguments-builder build",
 		"dts": "arguments-builder dts",

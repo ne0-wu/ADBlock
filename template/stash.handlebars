@@ -43,8 +43,13 @@ http:
       type: request
       require-body: false
       argument:
-    - match: ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/(splash\/(brand\/list|event\/list2|list|show)|feed\/index(\/story)?|search\/square)
+    - match: ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/(splash\/(brand\/list|event\/list2|list|show)|search\/square)
       name: 📺 BiliBili.ADBlock.response.json
+      type: response
+      require-body: true
+      argument:
+    - match: ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index(\/story)?
+      name: 📺 BiliBili.ADBlock.feed.response.json
       type: response
       require-body: true
       argument:
@@ -119,6 +124,9 @@ script-providers:
     interval: 86400
   📺 BiliBili.ADBlock.response.json:
     url: https://github.com/BiliUniverse/ADBlock/releases/download/v{{@package 'version'}}/response.bundle.js
+    interval: 86400
+  📺 BiliBili.ADBlock.feed.response.json:
+    url: https://github.com/BiliUniverse/ADBlock/releases/download/v{{@package 'version'}}/feed-response.bundle.js
     interval: 86400
   📺 BiliBili.ADBlock.response.grpc:
     url: https://github.com/BiliUniverse/ADBlock/releases/download/v{{@package 'version'}}/response.bundle.js

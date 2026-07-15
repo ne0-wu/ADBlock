@@ -6,7 +6,7 @@
 
 在仓库 Actions Secrets 中添加 `PACKAGE_TOKEN`。它的值必须是具有 `read:packages` 权限的 GitHub Personal Access Token (classic)，构建工作流需要使用它安装 `@nsnanocat/*` 包。
 
-`SUBMODULE_TOKEN` 是可选项。对于公开的 protobuf 子模块，构建会回退使用工作流的 `github.token`。
+个人发布构建不检出上游的私有 protobuf 子模块。首页推荐由 fork 独立构建的 `feed-response.bundle.js` 处理，其余响应继续使用经过 SHA-256 校验的上游稳定版 `response.bundle.js`。
 
 ## 发布
 
@@ -14,8 +14,8 @@
 
 ```bash
 git switch codex/release
-git tag -a v0.1.0-beta.1 -m "v0.1.0-beta.1"
-git push origin v0.1.0-beta.1
+git tag -a v0.1.0-beta.2 -m "v0.1.0-beta.2"
+git push origin v0.1.0-beta.2
 
 git tag -a v0.1.0 -m "v0.1.0"
 git push origin v0.1.0
