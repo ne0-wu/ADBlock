@@ -25,6 +25,14 @@ export interface Settings {
          */
         Activity?: boolean;
     /**
+         * [推荐] 去除直播
+         *
+         * 是否启用此处修改
+         *
+         * @defaultValue false
+         */
+        Live?: boolean;
+    /**
          * [推荐] 去除竖屏视频
          *
          * 是否启用此处修改

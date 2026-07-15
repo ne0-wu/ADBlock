@@ -98,6 +98,7 @@ export async function Response($request, $response) {
 							switch (Settings?.Feed?.AD) {
 								case true:
 								default: {
+									const isLiveCard = item => item?.card_goto === "live" && item?.card_type === "small_cover_v9";
 									if (body.data.items?.length) {
 										//区分pad与phone
 										body.data.items = await Promise.all(
@@ -132,14 +133,19 @@ export async function Response($request, $response) {
 														} else {
 															await fixPosition().then(result => (item = result)); //小广告补位
 														}
-													} else if (cardGoto === "live" && cardType === "small_cover_v9") {
-														let BlockUpLiveList = Settings?.Feed?.BlockUpLiveList;
-														if (typeof BlockUpLiveList === "number") {
-															BlockUpLiveList = BlockUpLiveList.toString();
-														}
-														if (BlockUpLiveList?.includes(item?.args?.up_id?.toString())) {
-															Console.log(`✅ 屏蔽Up主<${item?.args?.up_name}>直播推广`);
+													} else if (isLiveCard(item)) {
+														if (Settings?.Feed?.Live) {
+															Console.info("✅ 推荐页直播去除");
 															await fixPosition().then(result => (item = result)); //小广告补位
+														} else {
+															let BlockUpLiveList = Settings?.Feed?.BlockUpLiveList;
+															if (typeof BlockUpLiveList === "number") {
+																BlockUpLiveList = BlockUpLiveList.toString();
+															}
+															if (BlockUpLiveList?.includes(item?.args?.up_id?.toString())) {
+																Console.log(`✅ 屏蔽Up主<${item?.args?.up_name}>直播推广`);
+																await fixPosition().then(result => (item = result)); //小广告补位
+															}
 														}
 													} else if (cardType === "cm_v2" && ["ad_player", "ad_inline_3d", "ad_inline_eggs", "ad_inline_live"].includes(cardGoto)) {
 														Console.log(`✅ ${cardGoto}广告去除`);
@@ -174,6 +180,9 @@ export async function Response($request, $response) {
 									}
 									async function fixPosition() {
 										let itemsCache = Storage.getItem("@BiliBili.Index.Caches", []);
+										if (Settings?.Feed?.Live) {
+											itemsCache = itemsCache.filter(item => !isLiveCard(item));
+										}
 										let singleItem = {};
 										if (itemsCache && itemsCache.length > 0) {
 											singleItem = itemsCache.pop();
@@ -197,6 +206,8 @@ export async function Response($request, $response) {
 																	} else if (cardType === "cm_v2" && ["ad_web_s", "ad_av", "ad_web_gif", "ad_player", "ad_inline_3d", "ad_inline_eggs", "ad_inline_live"].includes(cardGoto)) {
 																		return undefined;
 																	} else if (cardType === "small_cover_v10" && cardGoto === "game") {
+																		return undefined;
+																	} else if (Settings?.Feed?.Live && isLiveCard(item)) {
 																		return undefined;
 																	} else if (cardType === "cm_double_v9" && cardGoto === "ad_inline_av") {
 																		return undefined;
@@ -245,6 +256,9 @@ export async function Response($request, $response) {
 										// vertical_pgc 大会员专享
 										Console.info("✅ 首页短视频流广告去除");
 										const filterSet = new Set(["vertical_ad_av", "vertical_ad_picture", "vertical_ad_live", "vertical_pgc"]);
+										if (Settings?.Feed?.Live) {
+											filterSet.add("vertical_live");
+										}
 										body.data.items = body.data.items.filter(i => !(i.hasOwnProperty("ad_info") || filterSet.has(i.card_goto)));
 									}
 									break;

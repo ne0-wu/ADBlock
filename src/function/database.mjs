@@ -5,6 +5,7 @@ export default {
 			Feed: {
 				AD: true,
 				Activity: false,
+				Live: false,
 				Vertical: false,
 				BlockUpLiveList: "",
 				Story: true,

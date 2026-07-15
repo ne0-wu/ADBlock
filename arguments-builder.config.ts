@@ -54,6 +54,13 @@ export default defineConfig({
 			description: "是否启用此处修改",
 		},
 		{
+			key: "Feed.Live",
+			name: "[推荐] 去除直播",
+			defaultValue: false,
+			type: "boolean",
+			description: "是否启用此处修改",
+		},
+		{
 			key: "Feed.Vertical",
 			name: "[推荐] 去除竖屏视频",
 			defaultValue: false,
