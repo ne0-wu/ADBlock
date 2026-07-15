@@ -4,7 +4,7 @@
 
 ## 必需的 Secret
 
-在仓库 Actions Secrets 中添加 `PACKAGE_TOKEN`。它的值必须是具有 `read:packages` 权限的 GitHub Personal Access Token (classic)，构建工作流需要使用它安装 `@nsnanocat/*` 包。
+发布工作流使用 GitHub Actions 自动生成的短期 `GITHUB_TOKEN` 安装公开的 `@nsnanocat/*` 包，并只授予 `packages: read` 权限。无需创建或保存个人 `PACKAGE_TOKEN`。
 
 个人发布构建不检出上游的私有 protobuf 子模块。首页推荐由 fork 独立构建的 `feed-response.bundle.js` 处理，其余响应继续使用经过 SHA-256 校验的上游稳定版 `response.bundle.js`。
 

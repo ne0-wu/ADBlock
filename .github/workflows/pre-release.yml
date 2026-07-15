@@ -9,11 +9,11 @@ on:
 permissions:
   actions: read
   contents: write
+  packages: read
 
 jobs:
   build:
     uses: ./.github/workflows/build.yml
-    secrets: inherit
   pre-release:
     needs: build
     runs-on: ubuntu-latest
